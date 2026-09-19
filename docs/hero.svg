@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Restaurant Recommendation System</title><desc id="desc">TF-IDF and hybrid restaurant recommendation project banner</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10223f"/><stop offset=".58" stop-color="#225e96"/><stop offset="1" stop-color="#42a6b8"/></linearGradient></defs>
+  <rect width="1200" height="360" rx="28" fill="url(#bg)"/>
+  <circle cx="1110" cy="50" r="150" fill="#fff" opacity=".06"/><circle cx="900" cy="350" r="210" fill="#ffd166" opacity=".08"/>
+  <g transform="translate(70 58)" font-family="Segoe UI, Arial, sans-serif">
+    <text x="0" y="58" fill="#ffffff" font-size="50" font-weight="800">Restaurant Recommendation</text>
+    <text x="2" y="107" fill="#d9eff7" font-size="24">TF-IDF content profiles and hybrid recommendation</text>
+    <rect x="0" y="147" width="382" height="48" rx="24" fill="#ffd166"/>
+    <text x="27" y="179" fill="#132845" font-size="20" font-weight="800">MACHINE LEARNING TEAM PROJECT</text>
+  </g>
+  <g transform="translate(770 48)">
+    <rect x="0" y="0" width="310" height="250" rx="34" fill="#fff" opacity=".13"/>
+    <path d="M58 50c0-28 23-50 51-50s51 22 51 50c0 39-51 91-51 91S58 89 58 50z" fill="#ff746c"/>
+    <circle cx="109" cy="49" r="22" fill="#fff4d0"/>
+    <path d="M101 34v31M117 34v31M95 45h28" stroke="#ff746c" stroke-width="6" stroke-linecap="round"/>
+    <g transform="translate(190 35)" fill="#dff4f7"><rect x="0" y="0" width="74" height="20" rx="7"/><rect x="0" y="38" width="52" height="20" rx="7"/><rect x="0" y="76" width="88" height="20" rx="7"/></g>
+    <path d="M68 185h178" stroke="#dff4f7" stroke-width="8" stroke-linecap="round"/>
+    <g fill="#ffd166"><circle cx="93" cy="185" r="14"/><circle cx="155" cy="185" r="14"/><circle cx="225" cy="185" r="14"/></g>
+    <path d="M93 185l62-42 70 42" fill="none" stroke="#79e0d2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
