@@ -1,0 +1,38 @@
+# B1 기준선 설정 (프로젝트 자체 형식, 외부 API로 보내지 않음).
+# null 인 값은 "사용자 확인 전"이라 비워 둔 것이다. 비어 있으면 run_baseline 은 실행을 거부한다.
+# prepare_data 는 data 항목만 사용한다.
+
+experiment:
+  stage: validation        # validation | test (test 는 설정을 고정한 뒤 1회만)
+  seed: 42
+
+data:
+  zip_path: Yelp-JSON.zip  # 저장소 루트 기준. 원본은 읽기만 한다
+  output_dir: data/pa_restaurants
+  state: PA
+  category: Restaurants
+
+split:
+  t_val: "2021-01-01"      # 사용자 확인 2026-10-22
+  t_test: "2021-07-01"     # 사용자 확인 2026-10-22
+  history_start: null      # 선택: 이력 시작일 제한. null 이면 처음부터
+
+eval:
+  target_definition: visit # 사용자 확인 2026-10-22. 평가 구간 리뷰 음식점 중 이력에 없고 후보에 있는 곳
+  positive_min_stars: 4    # 프로필용 긍정 이력 기준 (기존 코드 rating_norm >= 0.6 과 같은 별점 4 이상)
+  top_k: 10
+  max_eval_users: 5000     # 사용자 확인 2026-10-22. 조건 충족자 중 최대 5,000명(seed), 적으면 전원
+
+models: [popularity, tfidf, random]
+
+tfidf:                     # 기존 tfidf_main.py 와 같은 값
+  max_features: 10000
+  ngram_range: [1, 1]
+  min_df: 5
+  stop_words: english
+
+tracking:
+  output_root: artifacts/runs
+  mlflow: true             # mlflow 미설치·실패 시 results.json 에 사유를 남기고 계속한다
+  mlflow_tracking_uri: sqlite:///mlflow.db
+  mlflow_experiment: yelp-pa-baseline

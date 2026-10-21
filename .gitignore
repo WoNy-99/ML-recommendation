@@ -1,3 +1,28 @@
 data/
 venv/
 __pycache__/
+
+# 2026 확장: 실행 산출물·로컬 기록
+artifacts/
+mlflow.db
+mlruns/
+.pytest_cache/
+
+# 원본 자료·개인 문서는 공개 Git에 넣지 않는다
+*.zip
+*.tar
+*.docx
+
+# 비밀 정보
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+
+# 내부 계획·상태 기록, 작업 규칙, AI 도구 설정 (로컬 전용)
+/docs/PLAN.md
+/docs/STATUS.md
+/AGENTS.md
+/CLAUDE.md
+/.agents/
+/.claude/

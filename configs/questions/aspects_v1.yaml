@@ -1,0 +1,22 @@
+# System One choice 질문 정의. 선택지 순서는 positive, negative, mixed, not_mentioned 로 고정.
+# 수정하면 version을 올리고 해시가 바뀐다. 최종 평가 전에 freeze에 해시를 기록한다.
+version: v1
+questions:
+  food:
+    type: choice
+    instructions: >-
+      How does this restaurant review evaluate the food (taste, dishes, menu, portions)?
+    criteria:
+      positive: The review only praises the food.
+      negative: The review only complains about the food.
+      mixed: The review both praises and complains about the food.
+      not_mentioned: The review does not evaluate the food.
+  service:
+    type: choice
+    instructions: >-
+      How does this restaurant review evaluate the service (staff, servers, waiting, attentiveness)?
+    criteria:
+      positive: The review only praises the service.
+      negative: The review only complains about the service.
+      mixed: The review both praises and complains about the service.
+      not_mentioned: The review does not evaluate the service.

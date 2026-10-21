@@ -1,0 +1,16 @@
+# 사용자 질문 해석용 System One choice 질문. Yelp 데이터에서 만든 내용이 아니라 직접 작성한 고정 정의다.
+# 선택지 순서는 configs/query_demo.yaml 의 conditions(음식 종류 → other → unspecified → ambiguous)와 같아야 한다.
+# 기존 리뷰 감정 라벨(positive/negative/mixed/not_mentioned)과는 별개의 라벨이다.
+version: v1
+questions:
+  cuisine:
+    type: choice
+    instructions: >-
+      A user asked for a restaurant recommendation. Which single cuisine does the user ask for?
+    criteria:
+      italian: The user asks for Italian food (pasta, pizza, trattoria).
+      japanese: The user asks for Japanese food (sushi, ramen, izakaya).
+      mexican: The user asks for Mexican food (tacos, burritos).
+      other_cuisine: The user asks for one specific cuisine that is not Italian, Japanese or Mexican.
+      unspecified: The user does not ask for any particular cuisine.
+      ambiguous: The user names more than one cuisine or the requested cuisine is unclear.
