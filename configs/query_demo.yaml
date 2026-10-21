@@ -1,0 +1,67 @@
+# B2(변경): 사용자 질문 해석 -> 로컬 추천 데모 설정 (프로젝트 자체 형식, API로 그대로 보내지 않음)
+# 외부(API)로 가는 것: 사용자 질문 문장, 아래 questions_file의 고정 질문 정의, 모델 이름
+# 로컬에만 있는 것: Yelp 리뷰·음식점·카테고리, 아래 conditions/regions 매핑, 추천 결과
+baseline_config: configs/baseline.yaml     # t_val(학습 구간 끝), 준비된 데이터, TF-IDF 설정을 여기서 읽는다
+questions_file: configs/questions/query_v1.yaml
+
+conditions:
+  cuisine_categories:        # 해석 라벨 -> 로컬 Yelp 카테고리 이름 (대소문자 무시, 정확히 일치)
+    italian: [Italian]
+    japanese: [Japanese, Sushi Bars, Ramen]
+    mexican: [Mexican, Tex-Mex]
+  cuisine_query_terms:       # 로컬 TF-IDF 질의에 덧붙이는 영어 용어 (질문이 한국어여도 순위 계산 가능)
+    italian: italian
+    japanese: japanese sushi
+    mexican: mexican
+  other_label: other_cuisine     # 지원하지 않는 음식 종류 -> 추천하지 않고 안내
+  unspecified_label: unspecified # 음식 종류 언급 없음 -> 음식 종류 필터 없이 질문 문장만으로 순위
+  ambiguous_label: ambiguous     # 복수·불명확 -> 임의로 고르지 않고 다시 묻도록 안내
+
+regions:                     # 로컬 규칙. 자유 도시명 추출은 하지 않는다
+  supported:
+    philadelphia:
+      aliases: [philadelphia, philly, 필라델피아]
+      cities: [Philadelphia]
+  unsupported_aliases: [new york, nyc, 뉴욕, chicago, 시카고, los angeles, 로스앤젤레스]
+  # 지원 지역도, 지원하지 않는 지역도 언급이 없으면 현재 데이터 범위(PA 음식점) 전체를 후보로 쓴다
+
+top_k: 10
+
+# 외부 호출 승인. 기본값은 false다.
+# 실제 호출하려면 실행자가 전송 범위(질문 문장·질문 정의·모델 이름)와 아래 budget 한도를 확인한 뒤 직접 true로 바꾼다.
+# 과거 개인 연결 확인(질문 3개, 최대 3요청)의 승인은 이미 소진됐으며 새 실행 승인으로 재사용하지 않는다.
+# 그 실행의 당시 조건은 실행 폴더에 남긴 설정 사본이 근거다.
+approval:
+  query_connection_check: false
+
+connection_check_questions:       # 직접 작성한 질문 (Yelp 데이터 아님). expected 는 사람이 기대한 해석
+  - text: "필라델피아에서 이탈리안 음식점을 추천해줘"
+    expected: italian
+  - text: "Looking for a quiet sushi dinner place in Philly"
+    expected: japanese
+  - text: "필라델피아에서 이탈리안이나 멕시칸 아무거나 괜찮아"
+    expected: ambiguous
+
+# API 관련 값은 코드에 고정하지 않고 여기서 바꾼다. 이것은 설정 분리이며 공개 주소를 숨기는 조치가 아니다.
+# API 키는 환경변수에만 둔다.
+api:
+  provider: codiv
+  expected_base_url: https://api.codiv.ai   # 환경변수 값이 이와 다르면 실행 거부(경로 자동 전환 방지)
+  base_url_env: TYPESAFE_BASE_URL
+  api_key_env: TYPESAFE_API_KEY
+  endpoint_path: /v1/systemone              # codiv.ai/docs/quickstart (2026-10-22 조회)
+  request_id_header: x-typesafe-request-id
+  halt_error_types: [quota_exceeded_error]
+  model: openjev-latest
+  timeout_seconds: 30
+  min_interval_seconds: 1.0
+  max_retries: 3                            # 최초 요청 + 재시도 최대 3회. 예산 상한이 항상 우선
+
+budget:
+  ledger_path: data/query/budget_ledger.jsonl   # 누적 기록. 지우거나 초기화하지 않는다
+  connection_check:
+    max_requests: 3
+    max_estimated_input_tokens: 5000
+    max_run_seconds: 120                    # API 호출 구간 상한 (로컬 데이터 적재 시간은 별도)
+
+output_root: artifacts/query

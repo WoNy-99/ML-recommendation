@@ -1,0 +1,47 @@
+# B2 리뷰 속성 분류 파일럿 설정 (프로젝트 자체 형식, API로 그대로 보내지 않음)
+baseline_config: configs/baseline.yaml     # t_val(학습 구간 끝)과 준비된 데이터 경로를 여기서 읽는다
+questions_file: configs/questions/aspects_v1.yaml
+
+sample:
+  seed: 42
+  per_star: 8              # 별점 1~5 각 8개 = 40개
+  dev_per_star: 2          # 별점별 개발 2 / 최종 6 -> 개발 10, 최종 30
+  max_chars: 2000
+  output_dir: data/aspects/sample_v1   # gitignore. 기존 표본·라벨이 있으면 만들지 않는다
+
+# 사용자 승인 기록. Claude가 임의로 true로 바꾸지 않는다.
+approval:
+  connection_check: false      # 합성 문장 연결 확인(실제 리뷰 없음)
+  real_review_transfer: false  # 실제 리뷰(처리 후 텍스트) 전송. Yelp 약관 판단·사용자 승인 후에만
+
+# 개발 결과 확인 후 질문·규칙을 고정할 때 채운다. final 실행에 필수.
+freeze:
+  questions_sha256: null
+  keyword_rules_sha256: null
+
+# API 관련 값은 코드에 고정하지 않고 여기서만 바꾼다(제공 경로를 바꾸려면 이 블록과 환경변수를 함께 수정).
+api:
+  provider: codiv
+  expected_base_url: https://api.codiv.ai   # 환경변수 값이 이와 다르면 실행 거부(경로 자동 전환 방지)
+  base_url_env: TYPESAFE_BASE_URL
+  api_key_env: TYPESAFE_API_KEY             # 키 값은 환경변수로만. 설정·로그에 쓰지 않는다
+  endpoint_path: /v1/systemone              # codiv.ai/docs/quickstart (2026-10-22 조회)
+  request_id_header: x-typesafe-request-id  # 응답에 있으면 기록 (docs/guides/jev-compatibility)
+  halt_error_types: [quota_exceeded_error]  # 재시도하지 않고 즉시 중단할 오류 (docs/guides/rate-limits)
+  model: openjev-latest
+  timeout_seconds: 30
+  min_interval_seconds: 1.0                 # 요청 시작 간 최소 1초 = 최대 분당 60회
+  max_retries: 3                            # 최초 요청 + 재시도 최대 3회. 예산 상한이 항상 우선
+
+budget:
+  ledger_path: data/aspects/budget_ledger.jsonl   # 실행·재시작을 넘어 누적. 지우지 않는다
+  connection_check:
+    max_requests: 3
+    max_estimated_input_tokens: 5000
+    max_run_seconds: 120
+  pilot:                     # 개발·최종 실행 합산
+    max_requests: 100
+    max_estimated_input_tokens: 200000   # 문자 수 기반 임시 추정치의 합. 실제 토큰 상한 보장 아님
+    max_run_seconds: 900                 # 실행 1회(재시도 대기 포함) 상한
+
+output_root: artifacts/aspects
