@@ -26,7 +26,8 @@
 ## 현재 파이프라인 (2026 개인 확장)
 
 ```mermaid
-flowchart LR
+%%{init: {'themeVariables': {'fontSize': '22px'}, 'flowchart': {'nodeSpacing': 28, 'rankSpacing': 38}}}%%
+flowchart TB
   Q[사용자 질문] --> R{지역 규칙<br/>등록된 별칭만}
   R -- 등록된 미지원 지역 --> X[안내<br/>외부 호출 없음]
   subgraph EXT[외부: Codiv 호스팅 OpenJev]
@@ -91,6 +92,13 @@ flowchart LR
 - 이 3개는 연결 확인용 질문이며, 분류 정확도를 검증한 것이 아닙니다.
 - 지연에는 네트워크 시간이 포함됩니다.
 - 추천 목록의 품질은 평가하지 않았습니다.
+
+### OpenJev의 역할과 데이터 경계
+
+<p align="center">
+  <img src="docs/images/openjev-role.svg" alt="사용자 질문의 외부 해석과 로컬 TF-IDF 추천의 역할을 구분한 개념도" width="100%">
+</p>
+<p align="center"><sub>현재 구현 범위를 설명하기 위해 직접 제작한 개념도입니다. 공식 로고·제품 화면·실험 결과 이미지가 아닙니다. 세부 지역 규칙과 분기 조건은 위 Mermaid 구조도와 본문을 참고하세요.</sub></p>
 
 <details>
 <summary>Jev / OpenJev를 고른 이유</summary>
@@ -191,7 +199,8 @@ API 키는 환경변수로만 받고 로그·결과에 남기지 않습니다.
 ### 추천 파이프라인 (2025)
 
 ```mermaid
-flowchart LR
+%%{init: {'themeVariables': {'fontSize': '22px'}, 'flowchart': {'nodeSpacing': 28, 'rankSpacing': 38}}}%%
+flowchart TB
     A[Yelp 리뷰·카테고리] --> B[정제·집계]
     B --> C[TF-IDF 10K Features]
     C --> D[사용자 선호 프로필]
